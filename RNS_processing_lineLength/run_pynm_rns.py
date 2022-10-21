@@ -93,8 +93,8 @@ def get_LL(data_chunk, time_chunk, sfreq, time_len):
 
 # PATH_RNS = r"C:\Users\DY548\Documents\Python Scripts\trial\test data\PIT-RNS0427_PE20181120-1_EOF_SZ-NZ.EDF"
 
-#PATH_RNS = r"Z:\Users\DY548\RNS_processing\RNS_Data\PIT-RNS0427\iEEG\PIT-RNS0427_PE20181218-1_EOF_SZ-NZ.EDF"
-PATH_RNS = r"Z:\RNS_DataBank\PITT\PIT-RNS1090\iEEG\PIT-RNS1090_PE20170530-1_EOF_SZ-NZ.EDF"
+PATH_RNS = r"Z:\RNS_DataBank\PITT\PIT-RNS0427\iEEG\PIT-RNS0427_PE20181218-1_EOF_SZ-NZ.EDF"
+#PATH_RNS = r"Z:\RNS_DataBank\PITT\PIT-RNS1090\iEEG\PIT-RNS1090_PE20170530-1_EOF_SZ-NZ.EDF"
 
 raw = mne.io.read_raw_edf(PATH_RNS)
 
@@ -130,9 +130,9 @@ for i in range(1,len(non_sz_intervals)):
 # all_non_sz_data is of shape 4 * len, holding 4 channels of data corresponding to non-sz_intervals
 # all_non_sz_times is an array for the corresponding time points
 
-splice = range(round(sfreq*non_sz_intervals[2][0]),round(sfreq*non_sz_intervals[2][1]))
+splice = range(round(sfreq*non_sz_intervals[0][0]),round(sfreq*non_sz_intervals[0][1]))
 #splice = range(len(all_non_sz_times))
-non_sz_LL,non_sz_LL_time = get_LL(all_non_sz_data[0][splice], all_non_sz_times[splice], sfreq, 0.5)
+non_sz_LL,non_sz_LL_time = get_LL(all_non_sz_data[0][splice], all_non_sz_times[splice], sfreq, 0.04)
 
 
 """"
