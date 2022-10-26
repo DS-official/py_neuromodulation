@@ -24,6 +24,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import mne
+import scipy
 
 ###################
 def get_intervals(raw):
@@ -70,7 +71,7 @@ def line_length(data_interval):
     return LL
 
 
-def get_LL(data_chunk, time_chunk, sfreq, time_len):
+def get_LL_separate_intervals(data_chunk, time_chunk, sfreq, time_len):
     """ Returns an array of line-length calculations for given data chunk and time_len"""
 
     LL_arr = []
@@ -82,6 +83,25 @@ def get_LL(data_chunk, time_chunk, sfreq, time_len):
         LL_arr.append(line_length(data_chunk[idx:idx+interval_len]))
         time_arr.append(time_chunk[round(idx + (interval_len/2) )])
         idx = idx + interval_len
+
+    # if (idx < len(data_chunk)-1):
+    #    LL_arr.append(line_length(data_chunk[idx:]))
+
+    return LL_arr,time_arr
+
+def get_LL_overlapping(data_chunk: list, time_chunk: list, sfreq:float, time_len_s):
+    """ Returns an array of line-length calculations for given data chunk and time_len
+    MODIFICATION: overlapping intervals"""
+
+    LL_arr = []
+    time_arr = []
+    # if len(time_chunk) != len(data_chunk), throw exception
+    idx = 0
+    interval_len = round(sfreq*time_len_s)
+    while(idx+interval_len < len(data_chunk)):
+        LL_arr.append(line_length(data_chunk[idx:idx+interval_len]))
+        time_arr.append(time_chunk[round(idx + (interval_len/2) )])
+        idx = idx + 1
 
     # if (idx < len(data_chunk)-1):
     #    LL_arr.append(line_length(data_chunk[idx:]))
@@ -131,8 +151,16 @@ for i in range(1,len(non_sz_intervals)):
 # all_non_sz_times is an array for the corresponding time points
 
 splice = range(round(sfreq*non_sz_intervals[0][0]),round(sfreq*non_sz_intervals[0][1]))
+
+raw_data = all_non_sz_data[0][splice]
+z_score = (raw_data - raw_data.mean() )/raw_data.std()
 #splice = range(len(all_non_sz_times))
-non_sz_LL,non_sz_LL_time = get_LL(all_non_sz_data[0][splice], all_non_sz_times[splice], sfreq, 0.04)
+
+# Filter 
+b,a = scipy.signal.butter(4, [4, 30], btype='bandpass', analog=False, output='ba', fs=250)
+filteredBandPass = scipy.signal.lfilter(b, a, z_score)
+
+non_sz_LL,non_sz_LL_time = get_LL_overlapping(filteredBandPass, all_non_sz_times[splice], sfreq, 0.1)
 
 
 """"
