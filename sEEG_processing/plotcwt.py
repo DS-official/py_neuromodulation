@@ -35,7 +35,7 @@ raw = mne.io.read_raw_edf(PATH_RNS, preload=True)
 raw.notch_filter(line_noise_freqs)
 
 
-raw.resample(500)
+raw.resample(200)
 
 
 # Plot Raw file
@@ -74,28 +74,112 @@ print("DONE1")
 """
 
 
-rows = 5
-cols = 5
+rows = 4
+cols = 4
 
 fig, axs = plt.subplots(rows, cols)
 
 fs = raw.info['sfreq']
 w = 6.
-freq = np.linspace(1, fs/2, 50)
+freq = np.linspace(1, fs/2, 100)
 widths = w*fs / (2*freq*np.pi)
 
 for i in range(rows*cols):
-    ch_interval = raw.get_data(return_times=True)[0][i,intrvl_st:intrvl_end]
+    ch_interval = raw.get_data(return_times=True)[0][0+i,intrvl_st:intrvl_end]
     times_interval = raw.get_data(return_times=True)[1][intrvl_st:intrvl_end]
 
     cwtm = signal.cwt(ch_interval, signal.morlet2, widths, w=w)
     axs[i//rows, i%cols].pcolormesh(times_interval, freq, stats.zscore(np.abs(cwtm)), cmap='viridis', shading='gouraud',vmin=-0.5,vmax=0.5)
     #axs[i//8, i%8].set_clim(-0.5, 0.5)
-    axs[i//rows, i%cols].plot([sz_time, sz_time], [1,250], color="red", linewidth=2)
-    axs[i//rows, i%cols].set_title(raw.info['ch_names'][i])
+    axs[i//rows, i%cols].plot([sz_time, sz_time], [1,100], color="red", linewidth=2)
+    axs[i//rows, i%cols].set_title(raw.info['ch_names'][0+i])
 
 
+plt.tight_layout()
 plt.show()
+#plt.savefig("cwtplot.png")
+
+
+rows = 4
+cols = 4
+
+fig, axs = plt.subplots(rows, cols)
+
+for i in range(rows*cols):
+    ch_interval = raw.get_data(return_times=True)[0][16+i,intrvl_st:intrvl_end]
+    times_interval = raw.get_data(return_times=True)[1][intrvl_st:intrvl_end]
+
+    cwtm = signal.cwt(ch_interval, signal.morlet2, widths, w=w)
+    axs[i//rows, i%cols].pcolormesh(times_interval, freq, stats.zscore(np.abs(cwtm)), cmap='viridis', shading='gouraud',vmin=-0.5,vmax=0.5)
+    #axs[i//8, i%8].set_clim(-0.5, 0.5)
+    axs[i//rows, i%cols].plot([sz_time, sz_time], [1,100], color="red", linewidth=2)
+    axs[i//rows, i%cols].set_title(raw.info['ch_names'][16+i])
+
+
+plt.tight_layout()
+plt.show()
+
+
+rows = 4
+cols = 4
+
+fig, axs = plt.subplots(rows, cols)
+
+for i in range(rows*cols):
+    ch_interval = raw.get_data(return_times=True)[0][32+i,intrvl_st:intrvl_end]
+    times_interval = raw.get_data(return_times=True)[1][intrvl_st:intrvl_end]
+
+    cwtm = signal.cwt(ch_interval, signal.morlet2, widths, w=w)
+    axs[i//rows, i%cols].pcolormesh(times_interval, freq, stats.zscore(np.abs(cwtm)), cmap='viridis', shading='gouraud',vmin=-0.5,vmax=0.5)
+    #axs[i//8, i%8].set_clim(-0.5, 0.5)
+    axs[i//rows, i%cols].plot([sz_time, sz_time], [1,100], color="red", linewidth=2)
+    axs[i//rows, i%cols].set_title(raw.info['ch_names'][32+i])
+
+
+plt.tight_layout()
+plt.show()
+
+
+
+rows = 4
+cols = 4
+
+fig, axs = plt.subplots(rows, cols)
+
+for i in range(rows*cols):
+    ch_interval = raw.get_data(return_times=True)[0][48+i,intrvl_st:intrvl_end]
+    times_interval = raw.get_data(return_times=True)[1][intrvl_st:intrvl_end]
+
+    cwtm = signal.cwt(ch_interval, signal.morlet2, widths, w=w)
+    axs[i//rows, i%cols].pcolormesh(times_interval, freq, stats.zscore(np.abs(cwtm)), cmap='viridis', shading='gouraud',vmin=-0.5,vmax=0.5)
+    #axs[i//8, i%8].set_clim(-0.5, 0.5)
+    axs[i//rows, i%cols].plot([sz_time, sz_time], [1,100], color="red", linewidth=2)
+    axs[i//rows, i%cols].set_title(raw.info['ch_names'][48+i])
+
+
+plt.tight_layout()
+plt.show()
+
+
+rows = 4
+cols = 4
+
+fig, axs = plt.subplots(rows, cols)
+
+for i in range(rows*cols):
+    ch_interval = raw.get_data(return_times=True)[0][64+i,intrvl_st:intrvl_end]
+    times_interval = raw.get_data(return_times=True)[1][intrvl_st:intrvl_end]
+
+    cwtm = signal.cwt(ch_interval, signal.morlet2, widths, w=w)
+    axs[i//rows, i%cols].pcolormesh(times_interval, freq, stats.zscore(np.abs(cwtm)), cmap='viridis', shading='gouraud',vmin=-0.5,vmax=0.5)
+    #axs[i//8, i%8].set_clim(-0.5, 0.5)
+    axs[i//rows, i%cols].plot([sz_time, sz_time], [1,100], color="red", linewidth=2)
+    axs[i//rows, i%cols].set_title(raw.info['ch_names'][64+i])
+
+
+plt.tight_layout()
+plt.show()
+
 
 
 print("DONE")
@@ -126,16 +210,16 @@ print("DONE")
 
 
 
-t, dt = np.linspace(0, 1, 200, retstep=True)
-fs = 1/dt
-w = 6.
-sig = np.cos(2*np.pi*(50 + 10*t)*t) + np.sin(40*np.pi*t)
-freq = np.linspace(1, fs/2, 100)
-widths = w*fs / (2*freq*np.pi)
-cwtm = signal.cwt(sig, signal.morlet2, widths, w=w)
-plt.figure()
-plt.pcolormesh(t, freq, np.abs(cwtm), cmap='viridis', shading='gouraud')
-plt.show()
+#t, dt = np.linspace(0, 1, 200, retstep=True)
+#fs = 1/dt
+#w = 6.
+#sig = np.cos(2*np.pi*(50 + 10*t)*t) + np.sin(40*np.pi*t)
+#freq = np.linspace(1, fs/2, 100)
+#widths = w*fs / (2*freq*np.pi)
+#cwtm = signal.cwt(sig, signal.morlet2, widths, w=w)
+#plt.figure()
+#plt.pcolormesh(t, freq, np.abs(cwtm), cmap='viridis', shading='gouraud')
+#plt.show()
 
 
 print("DONE")
